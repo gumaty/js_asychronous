@@ -1,6 +1,8 @@
 const box = document.querySelector('.box');
-//
+
 // // callback hell
+
+
 // setTimeout(() => {
 //     box.style.left = "500px";
 //     setTimeout(() => {
@@ -14,6 +16,8 @@ const box = document.querySelector('.box');
 //     }, 3000);
 // }, 3000);
 
+
+// Promise
 
 
 // const receipt = new Promise((resolve, reject) => {
@@ -52,10 +56,44 @@ const box = document.querySelector('.box');
 //     .then(() => move('500px', 0))
 //     .then(() => move(0, 0));
 
-const url = "http://api.nbp.pl/api/exchangerates/rates/a/eur/?format=json";
-const request = fetch(url);
+
+// fetch - promise based
+
+
+const url = "http://api.nbp.pl/api/exchangerates/rates/a/chf/?format=json";
+// const request = fetch(url);
+//
+// request
+//     .then((response) => response.json())
+//     .then((data) => console.log(data.rates[0].mid))
+//     .catch(console.log);
+
+
+function myFetch(url){
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status <400) {
+                const response = JSON.parse(xhr.responseText)
+                resolve(response);
+            } else {
+                reject(xhr.status);
+            }
+
+        }
+        xhr.onerror = function () {
+            reject('Something is no yes!');
+        }
+
+        xhr.open('GET', url, true);
+        xhr.send();
+    })
+}
+
+const request = myFetch(url);
 
 request
-    .then((response) => response.json())
-    .then((data) => console.log(data.rates[0].mid))
-    .catch(console.log);
+    .then((data) => console.log(data))
+    .catch((error) => console.log(error))
+    .finally(() => console.log('done!'))
